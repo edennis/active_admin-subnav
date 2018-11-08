@@ -1,7 +1,7 @@
 require 'bundler/setup'
 require 'minitest/autorun'
-require 'minitest/spec/expect'
 
+require 'active_record'
 require 'active_admin/subnav'
 require 'sass-rails'
 
@@ -11,24 +11,24 @@ end
 
 ResourceMenuSpec = Minitest::SharedExamples.new do
   it "to have sub navigation menu name accessor" do
-    expect(resource).to_respond_to :sub_navigation_menu_name
-    expect(resource).to_respond_to :sub_navigation_menu_name=
+    assert_respond_to resource, :sub_navigation_menu_name
+    assert_respond_to resource, :sub_navigation_menu_name=
   end
 
   it "is a sub menu item when sub_navigation_menu_name is set" do
-    expect(resource.sub_menu_item?).to_equal false
+    refute resource.sub_menu_item?
     resource.sub_navigation_menu_name = "Dashboard"
-    expect(resource.sub_menu_item?).to_equal true
+    assert resource.sub_menu_item?
   end
 end
 
 describe "activeadmin-subnav" do
   it "registers a sub navigation view" do
-    expect(ActiveAdmin::ViewFactory.new.default_for(:sub_navigation)).to_equal ActiveAdmin::Views::TabbedNavigation
+    assert_equal ActiveAdmin::Views::TabbedNavigation, ActiveAdmin::ViewFactory.new.default_for(:sub_navigation)
   end
 
   it "registers a header with subn navigation" do
-    expect(ActiveAdmin::ViewFactory.new.default_for(:header)).to_equal ActiveAdmin::Views::HeaderWithSubnav
+    assert_equal ActiveAdmin::Views::HeaderWithSubnav, ActiveAdmin::ViewFactory.new.default_for(:header)
   end
 
   def namespace
@@ -38,7 +38,7 @@ describe "activeadmin-subnav" do
 
   describe "extends ActiveAdmin::Namespace" do
     it "adds sub menus" do
-      expect(namespace).to_respond_to :sub_menus
+      assert_respond_to namespace, :sub_menus
     end
   end
 
@@ -49,7 +49,7 @@ describe "activeadmin-subnav" do
     include ResourceMenuSpec
 
     it "to never show sub menus" do
-      expect(page.show_sub_menu?).to_equal false
+      refute page.show_sub_menu?
     end
   end
 
@@ -61,7 +61,7 @@ describe "activeadmin-subnav" do
 
     it "to assign nested resources" do
       resource.nested_resources = "nested"
-      expect(resource.has_nested_resources?).to_equal "nested"
+      assert_equal "nested", resource.has_nested_resources?
     end
   end
 end
